@@ -1,30 +1,69 @@
-import {Request, Response} from "express";
-
-import { BookController } from "../controllers/bookController";
+import { Project } from "../entity/Project";
+import {BaseController } from "../controllers/baseController";
+import { getRepository } from "typeorm";
+import { Customer } from "../entity/Customer";
+import { Division } from "../entity/Division";
+import { User } from "../entity/User";
 
 
 export class Routes {       
-    public bookController: BookController = new BookController();
     public routes(app): void {          
-        app.route('/')
-        .get((req: Request, res: Response) => {            
-            res.status(200).send({
-                message: 'GET request successfulll!!!!'
-            })
-        })               
+        this.setupProjectRoutes(app);
+        this.setupCustomerRoutes(app);
+        this.setupDivisionRoutes(app);
+        this.setupUserRoutes(app);
+    }
 
-        // GET ALL BOOKS
-        app.route('/books')
-        .get(this.bookController.getBooks)
-        .post(this.bookController.addNewBook)
-        // GET DETAIL BOOK
-        app.route('/books/:bookId')
-        .get(this.bookController.getBookWithID)
-        .put(this.bookController.updateBook)
-        .delete(this.bookController.deleteBook)
+    private setupProjectRoutes(app) {
+        let controller = new BaseController(
+            getRepository(Project)
+        );
+        app.route('/projects')
+        .get(controller.getAll.bind(controller))
+        .post(controller.create.bind(controller))
+        app.route('/projects/:id')
+        .get(controller.getDetail.bind(controller))
+        .put(controller.update.bind(controller))
+        .delete(controller.delete.bind(controller))
+    }
 
 
+    private setupCustomerRoutes(app) {
+        let controller = new BaseController(
+            getRepository(Customer)
+        );
+        app.route('/customers')
+        .get(controller.getAll.bind(controller))
+        .post(controller.create.bind(controller))
+        app.route('/customers/:id')
+        .get(controller.getDetail.bind(controller))
+        .put(controller.update.bind(controller))
+        .delete(controller.delete.bind(controller))
+    }
 
+    private setupUserRoutes(app) {
+        let controller = new BaseController(
+            getRepository(User)
+        );
+        app.route('/users')
+        .get(controller.getAll.bind(controller))
+        .post(controller.create.bind(controller))
+        app.route('/users/:id')
+        .get(controller.getDetail.bind(controller))
+        .put(controller.update.bind(controller))
+        .delete(controller.delete.bind(controller))
+    }
 
+    private setupDivisionRoutes(app) {
+        let controller = new BaseController(
+            getRepository(Division)
+        );
+        app.route('/divisions')
+        .get(controller.getAll.bind(controller))
+        .post(controller.create.bind(controller))
+        app.route('/divisions/:id')
+        .get(controller.getDetail.bind(controller))
+        .put(controller.update.bind(controller))
+        .delete(controller.delete.bind(controller))
     }
 }
